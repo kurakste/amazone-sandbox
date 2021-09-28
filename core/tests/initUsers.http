@@ -1,0 +1,122 @@
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "researcher",
+  "email": "researcher@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('01. ### POST /user', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('_id'), 'GUID was not found.')
+        client.global.set('guidAfterPost', response.body._id)
+    })
+%}
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "researcher2",
+  "email": "researcher2@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('01. ### POST /user', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('_id'), 'GUID was not found.')
+        client.global.set('guidAfterPost', response.body._id)
+    })
+%}
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "buyer",
+  "email": "buyer@gmail.com",
+  "password": "qwerty"
+}
+
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "storekeeper",
+  "email": "storekeeper@gmail.com",
+  "password": "qwerty"
+}
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "super",
+  "email": "super@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('01. ### POST /user', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('_id'), 'GUID was not found.')
+        client.global.set('guidAfterPost', response.body._id)
+    })
+%}
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "client",
+  "email": "client@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('01. ### POST /user', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('_id'), 'GUID was not found.')
+        client.global.set('guidAfterPost', response.body._id)
+    })
+%}
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: Bearer -=test_token=-
+
+{
+  "name": "admin",
+  "email": "admin@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('01. ### POST /user', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('_id'), 'GUID was not found.')
+        client.global.set('guidAfterPost', response.body._id)
+    })
+%}

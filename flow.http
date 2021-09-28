@@ -1,0 +1,511 @@
+### POST /tech/clear_all_schemas
+POST {{url}}/tech/clear_all_schemas
+Content-Type: application/json
+Authorization: {{tokenAdmin}}
+
+{
+}
+### POST /suppliers
+POST {{url}}/suppliers
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{
+  "name":  "Bond" ,
+  "link":  "www.bond.uk",
+  "price":  2000,
+  "delivery":  50,
+  "amount":  300,
+  "minlot":  30,
+  "lotcost":  300,
+  "comment":  "Крутой поставщик с правом на обстрел."
+}
+
+> {%
+    client.test('00-01. ### POST /suppliers', function() {
+        client.assert(response.status === 201, 'Response status is not 201')
+    })
+%}
+
+### POST /researchers
+POST {{url}}/researchers/products
+Content-Type: application/json
+Authorization: {{tokenResearcher1}}
+
+{
+  "id": "ASIN_FOR_ClienT_test5",
+  "lamazon": "www.rbc.ru",
+  "lsupplier": "ссылка на поставщика",
+  "bsr":2,
+  "amazon":2341234,
+  "currentSupplier": "6114342bec8d4434d01b7a54",
+  "supplier":["6114342bec8d4434d01b7a54"],
+  "fbafee":0.23,
+  "delivery":3000,
+  "icomment":"Просто комент.",
+  "images": ["string 1", "string 2"]
+}
+
+> {%
+    client.test('00-01. ### POST /suppliers', function() {
+        client.assert(response.status === 201, 'Response status is not 201')
+        client.assert(response.body.hasOwnProperty('guid'), 'GUID was not found.')
+        client.global.set('guidProductAfterPost', response.body.guid)
+    })
+%}
+
+### GET /supervisors/products/vac
+GET {{url}}/supervisors/products/vac
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+> {%
+    client.test('00. ### POST /supervisor/product/vac', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### POST /supervisors/products/pickup/:guid
+POST {{url}}/supervisors/products/pickup/{{guidProductAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+### GET /supervisors/products/my
+GET {{url}}/supervisors/products/my
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+> {%
+    client.test('02. ### GET /supervisors/products/my', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### PATCH /supervisors/products/:guid
+PATCH {{url}}/supervisors/products/{{guidProductAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+  "sku": "string",
+  "material": "string",
+  "category": "string",
+  "lamazon": "www.rbc.ru",
+  "bsr": 2,
+  "fba": false,
+  "express": false,
+  "amazon": 2341234,
+  "height": 0,
+  "width": 0,
+  "length": 0,
+  "weight": 0,
+  "reffee": 0.15,
+  "fbafee": 0.23,
+  "fbaamount": 0,
+  "fbalink": "string",
+  "delivery": 3000,
+  "icomment": "Просто коммент.",
+  "images": [
+    "string"
+  ],
+  "amazonDescription": "string",
+  "amazonDetail": "string",
+  "amazonTitle": "string",
+  "barCode": "string",
+  "minpurchase": 0,
+  "profit": 0,
+  "margin": 0,
+  "byboxprice": 54.2
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+### PATCH /supervisors/products/:guid
+PATCH {{url}}/supervisors/products/{{guidProductAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+  "status":30,
+  "checkednotes": "Lalalala notes!"
+}
+
+### GET /buyers/products/vac
+GET {{url}}/buyers/products/vac
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+> {%
+    client.test('00. ### POST /suppliers', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### POST /buyers/products/pickup/:guid
+POST {{url}}/buyers/products/pickup/{{guidProductAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{}
+
+> {%
+    client.test('00. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 204')
+    })
+%}
+
+### GET /buyers/products/my
+GET {{url}}/buyers/products/my
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+> {%
+    client.test('00. ### POST /suppliers', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### PATCH /buyers/products/:guid
+PATCH {{url}}/buyers/products/{{guidProductAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{
+  "lsupplier": "test patch",
+  "fbalink": "www.testFbaLink.com",
+  "status": 40,
+  "buyerscomment": "Полезные комменты от байера."
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+### PATCH /supervisors/products/status/:guid
+PATCH {{url}}/supervisors/products/{{guidProductAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+  "status":70,
+  "checkednotes": "Lalalala notes!"
+}
+
+
+### GET /clients/products/vac
+GET {{url}}/clients/products/vac
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+> {%
+    client.test('01. ### GET /clients/products/vac', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+        client.global.set('firstVacProductGuid', response.body[0]._id)
+    })
+%}
+
+### POST /clients/products/pickup/:guid
+POST {{url}}/clients/products/pickup/{{firstVacProductGuid}}
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{}
+
+> {%
+    client.test('01. ### POST /clients/products/pickup/:guid', function() {
+        client.assert(response.status === 204, 'Response status is not 204')
+    })
+%}
+
+### GET /clients/products/my
+GET {{url}}/clients/products/my
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+> {%
+    client.test('01. ### POST /clients/products/pickup/:guid', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### POST /clients/products/make_payments
+POST {{url}}/clients/make_payments
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{
+  "guids": ["611434c47d5d3034948e7f53"]
+}
+
+### GET /clients/products/paid
+GET {{url}}/clients/products/paid
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+### POST /clients/orders
+POST {{url}}/clients/orders
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{
+  "status": 1,
+  "clientComment": "Комментарии клиента.",
+  "warehouse": 2,
+  "deliveryMethod": 2,
+  "amount": 100,
+  "warehouse":3,
+  "barCode": "https://may.file/234.pdf",
+  "product": "611434c47d5d3034948e7f53"
+
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('guid'), 'GUID was not found.')
+        client.global.set('orderGuidAfterPost', response.body.guid)
+    })
+%}
+
+### PATCH /clients/orders/:guid
+PATCH {{url}}/clients/orders/{{orderGuidAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{
+  "clientComment": "22 Комментарии клиента.",
+  "warehouse": 22,
+  "deliveryMethod": 22,
+  "amount": 20,
+  "warehouse":23,
+  "barCode": "2https://may.file/234.pdf"
+
+}
+
+### GET /clients/orders
+GET {{url}}/clients/orders
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+### GET /clients/orders/
+GET {{url}}/clients/orders/{{orderGuidAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+### POST /boxes
+POST {{url}}/boxes
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{
+  "lengthCm": 10,
+  "widthCm": 10,
+  "heightCm": 10,
+  "weighGrossKg": 15.5,
+  "volumeWeightKg": 25.5,
+  "weightFinalAccountingKg": 25.5,
+  "lengthCmSupplier": 25,
+  "widthCmSupplier": 35,
+  "heightCmSupplier": 45,
+  "weighGrossKgSupplier": 45,
+  "volumeWeightKgSupplier": 15,
+  "weightFinalAccountingKgSupplier": 25,
+  "warehouse": 25,
+  "deliveryMethod": 25,
+  "scheduledDispatchDate": "2021-06-15",
+  "factDispatchDate": "2021-06-15",
+  "isDraft": false,
+  "items": [
+    {
+      "product": "610ae6af5fbb98101833f2d5",
+      "amount": "420",
+      "order": "610aea0bcb5ead76e814a7b3"
+    }
+  ],
+  "clientId": "60c1e3ff86b7c05cc843cb0f",
+  "images": ["first_img.jpg", "second_ims.jpg"]
+}
+
+> {%
+    client.test('00. ### POST /boxes', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.global.set('boxGuidAfterPost', response.body.guid)
+    })
+%}
+
+
+### Тригер оплаты. Должны списаться деги с клиента
+### PATCH /buyers/orders/:guid
+PATCH {{url}}/buyers/orders/611438477ea681087810c9d1
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{
+  "status": 20
+
+}
+
+
+
+### POST /boxes/split
+POST {{url}}/boxes/split
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{
+  "guid": "610aeda9cb5ead76e814a7b8",
+  "itemsBoxSet": [
+    [
+      {
+        "product": "610ae6af5fbb98101833f2d5",
+        "amount": "32",
+        "order": "610aea0bcb5ead76e814a7b3"
+      }
+    ],
+    [
+      {
+        "product": "610ae6af5fbb98101833f2d5",
+        "amount": "12",
+        "order": "610aea0bcb5ead76e814a7b3"
+      }
+    ]
+  ]
+}
+
+> {%
+    client.test('00. ### POST /boxes', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+    })
+%}
+
+### POST /clients/tasks
+POST {{url}}/clients/tasks
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{
+  "boxesBefore": ["610aeda9cb5ead76e814a7b8"],
+  "boxes": ["610aedd4cb5ead76e814a7ba","610aedd5cb5ead76e814a7bc"],
+  "taskId": 1,
+  "operationType": "receive"
+}
+
+### GET /boxes/drafts
+GET {{url}}/boxes/drafts
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+> {%
+    client.test('00. ### GET /boxes', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+
+### GET /boxes
+GET {{url}}/boxes
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+> {%
+    client.test('00. ### GET /boxes', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### GET /boxes/clients
+GET {{url}}/boxes/clients
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+> {%
+    client.test('00. ### GET /boxes', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### GET /boxes/by_order_guid/:guid
+GET {{url}}/boxes/by_order_guid/{{orderGuidAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+> {%
+    client.test('00. ### GET /boxes', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### POST /boxes/approve
+POST {{url}}/boxes/approve
+Content-Type: application/json
+Authorization: {{tokenStorekeeper}}
+
+{
+  "guid": "610aedd5cb5ead76e814a7bc"
+}
+
+> {%
+    client.test('00. ### POST /boxes', function() {
+        client.assert(response.status === 204, 'Response status is not 204')
+    })
+%}
+
+### GET /storekeepers/tasks/vac
+GET {{url}}/storekeepers/tasks/vac
+Content-Type: application/json
+Authorization: {{tokenStorekeeper}}
+
+> {%
+    client.test('01. ### /buyers/boxes', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+        client.global.set('guidFirstVacTask', response.body[0]._id)
+    })
+%}
+
+### POST /storekeepers/tasks/pickup
+POST {{url}}/storekeepers/tasks/pickup/{{guidFirstVacTask}}
+Content-Type: application/json
+Authorization: {{tokenStorekeeper}}
+
+{}
+
+### GET /storekeepers/tasks/my
+GET {{url}}/storekeepers/tasks/my
+Content-Type: application/json
+Authorization: {{tokenStorekeeper}}
+
+> {%
+    client.test('01. ### /storekeepers/tasks/may', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+        client.global.set('guidFirstVacTask', response.body[0]._id)
+    })
+%}
+
+### POST /storekeepers/tasks/done/:guid
+POST {{url}}/storekeepers/tasks/done/{{guidFirstVacTask}}
+Content-Type: application/json
+Authorization: {{tokenStorekeeper}}
+
+{
+}
+
+> {%
+    client.test('01. ### PATCH /storekeepers/tasks/:guid', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}

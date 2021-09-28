@@ -1,0 +1,250 @@
+### Тест проходит через этапы создания товара менеджером, проверка товара супервайзером
+### подбор товара клиентом. Заказ товара клиентом. Подбор байером + формирование коробок.
+### редактирование коробок. Объединение коробок. Разъеденение коробок.
+### Для работы теста в системе должны быть заведены пользователи каждой роли.
+### Нужно прописать guid пользователя в каждый токен.
+
+############################ Создание товара. ############################################
+
+### POST /managers
+POST {{url}}/researchers/products
+Content-Type: application/json
+Authorization: {{tokenresearcher1}}
+
+{
+  "id": "JUSTASIN1",
+  "lamazon": "www.rbc.ru",
+  "lsupplier": "ссылка на поставщика",
+  "bsr":1,
+  "amazon":11111,
+  "supplier":11,
+  "fbafee":0.15,
+  "delivery":111,
+  "icomment":"Просто комент от менеджера 1",
+  "images": ["string 11", "string 12"]
+
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('guid'), 'GUID was not found.')
+        client.global.set('product1Guid', response.body.guid)
+    })
+%}
+
+
+### POST /researchers
+POST {{url}}/researchers/products
+Content-Type: application/json
+Authorization: {{tokenresearcher1}}
+
+{
+  "id": "JUSTASIN2",
+  "lamazon": "www.rbc.ru",
+  "lsupplier": "ссылка на поставщика",
+  "bsr":2,
+  "amazon":21111,
+  "supplier":21,
+  "fbafee":0.15,
+  "delivery":211,
+  "icomment":"Просто комент от менеджера 2",
+  "images": ["string 21", "string 22"]
+
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('guid'), 'GUID was not found.')
+        client.global.set('product2Guid', response.body.guid)
+    })
+%}
+
+### POST /researchers
+POST {{url}}/researchers/products
+Content-Type: application/json
+Authorization: {{tokenresearcher1}}
+
+{
+  "id": "JUSTASIN3",
+  "lamazon": "www.rbc.ru",
+  "lsupplier": "ссылка на поставщика",
+  "bsr":3,
+  "amazon":31111,
+  "supplier":31,
+  "fbafee":0.15,
+  "delivery":311,
+  "icomment":"Просто комент от менеджера 3",
+  "images": ["string 31", "string 32"]
+
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 201, 'Response status is not 200')
+        client.assert(response.body.hasOwnProperty('guid'), 'GUID was not found.')
+        client.global.set('product3Guid', response.body.guid)
+    })
+%}
+
+############################ Смотрим супервайзерои и проверяем продукт. ############################################################
+
+### GET /supervisors/vac_products
+GET {{url}}/supervisors/products/vac
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+> {%
+    client.test('00. ### POST /suppliers', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+
+### POST /supervisors/products/pickup/:guid
+POST {{url}}/supervisors/products/pickup/{{product1Guid}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+### POST /supervisors/products/pickup/:guid
+POST {{url}}/supervisors/products/pickup/{{product2Guid}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+### GET /supervisors/products/my
+GET {{url}}/supervisors/products/my
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+> {%
+    client.test('00. ### GET /supervisors/products/my', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### PATCH /supervisors/products/:guid
+PATCH {{url}}/supervisors/products/{{product1Guid}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+  "status": 3,
+  "checkednotes": "Lalalala notes!"
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+### PATCH /supervisors/products/:guid
+PATCH {{url}}/supervisors/products/{{product2Guid}}
+Content-Type: application/json
+Authorization: {{tokenSuper}}
+
+{
+  "status": 3,
+  "checkednotes": "Lalalala notes!"
+}
+
+> {%
+    client.test('01. ### POST /suppliers', function() {
+        client.assert(response.status === 204, 'Response status is not 200')
+    })
+%}
+
+################################## BUYER ========================================================================
+
+### GET /buyers/products/vac
+GET {{url}}/buyers/products/vac
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+> {%
+    client.test('00. ### GET /buyers/products/vac', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### POST /buyers/products/pickup/:guid
+POST {{url}}/buyers/products/pickup/{{product1Guid}}
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+{}
+
+> {%
+    client.test('00. ### POST /buyers/products/pickup/:guid', function() {
+        client.assert(response.status === 204, 'Response status is not 204')
+    })
+%}
+
+### GET /buyers/products/my
+GET {{url}}/buyers/products/my
+Content-Type: application/json
+Authorization: {{tokenBuyer}}
+
+> {%
+    client.test('00. ### GET /buyers/products/my', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+###  здесь какой-то тупик) Что байер делает с товаром. Он из товара может сдеалть заказ
+
+########################### Client =========================================================
+
+### GET /clients/products/vac
+GET {{url}}/clients/products/vac
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+> {%
+    client.test('01. ### GET /clients/products/vac', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}
+
+### POST /clients/products/pickup/:guid
+POST {{url}}/clients/products/pickup/{{product2Guid}}
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{}
+
+> {%
+    client.test('01. ### POST /clients/products/pickup/:guid', function() {
+        client.assert(response.status === 204, 'Response status is not 204')
+    })
+%}
+
+### GET /clients/products/my
+GET {{url}}/clients/products/my
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+> {%
+    client.test('01. ### GET /clients/products/my', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+    })
+%}

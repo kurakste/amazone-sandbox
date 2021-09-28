@@ -1,0 +1,94 @@
+
+### POST /users
+POST {{url}}/users
+Content-Type: application/json
+Authorization: {{tokenAdmin}}
+
+{
+  "name": "stranger112",
+  "email": "clientmn11@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('01. ### POST /user', function() {
+        client.assert(response.status === 201, 'Response status is not 201')
+        client.assert(response.body.hasOwnProperty('_id'), 'GUID was not found.')
+        client.global.set('guidAfterPost', response.body._id)
+    })
+%}
+
+### POST /users/sign_in
+POST {{url}}/users/sign_in
+Content-Type: application/json
+Authorization: {{tokenAdmin}}
+
+{
+  "email": "clientmn10@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('02. ### POST /user/sign_in', function() {
+        client.assert(response.status === 201, 'Response status is not 201')
+        client.assert(response.body.hasOwnProperty('token'), 'Token was not found.')
+    })
+%}
+
+### POST /users Должна быть ошибка - проверка почты.
+POST {{url}}/users
+Content-Type: application/json
+Authorization: {{tokenClient}}
+
+{
+  "name": "stranger",
+  "email": "clientmn10@gmail.com",
+  "password": "qwerty"
+}
+
+
+> {%
+    client.test('03. ### POST /users (MUST BE ERROR)', function() {
+        client.assert(response.status === 400, 'Response status is not 400')
+
+    })
+%}
+
+### GET /users/info
+GET {{url}}/users/info
+Content-Type: application/json
+Authorization: {{tokenAdmin}}
+
+> {%
+    client.test('04. ### GET /users', function() {
+        client.assert(response.status === 200, 'Response status is not 200')
+
+    })
+%}
+
+
+### DELETE /users/607dceac3551e3fa7e7fbb69
+DELETE {{url}}/users/{{guidAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenAdmin}}
+
+> {%
+    client.test('07. ### DELETE /users/:guid', function() {
+        client.assert(response.status === 204, 'Response status is not 204')
+
+    })
+%}
+
+### DELETE /users/607dceac3551e3fa7e7fbb69
+DELETE {{url}}/users/{{guidAfterPost}}
+Content-Type: application/json
+Authorization: {{tokenAdmin}}
+
+> {%
+    client.test('07. ### DELETE /users/:guid', function() {
+        client.assert(response.status === 404, 'Response status is not 404')
+
+    })
+%}
