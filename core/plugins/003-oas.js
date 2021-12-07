@@ -34,7 +34,7 @@ const fastifyOpenAPI = async function (fastify) {
         tags: [],
         definitions: {
           User: {
-            $id: 'User',
+            $id: '#User',
             type: 'object',
             required: ['id', 'email'],
             properties: {

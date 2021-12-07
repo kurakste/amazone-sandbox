@@ -19,7 +19,7 @@ module.exports = async function (fastify) {
       // headers: {$ref: 'defaultHeaders#'},
       response: {
         // 200: {type: 'string', example: 'ok'}
-        // 200: {$ref: 'def-0#'},
+        // 200: {$ref: 'User#'},
         // 400: {$ref: 'badRequestError#'},
         // 404: {$ref: 'notFoundError#'},
         // 500: {$ref: 'internalServerError#'}
