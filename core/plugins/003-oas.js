@@ -15,36 +15,67 @@ const ErrorOpenAPI = createError('FST_OAS_ERROR', '%s', 500)
 const fastifyOpenAPI = async function (fastify) {
   // Обработка функционала плагина
   try {
-    // Регистрация плагина fastify-oas
-    // https://gitlab.com/m03geek/fastify-oas
-    fastify.register(require('fastify-oas'), {
-      exposeRoute: fastify.config.debug || fastify.config.custom.oas.expose,
-      addModels: true,
-      openapi:'3.0.0',
-      hideUntagged: true,
+    fastify.register(require('fastify-swagger'), {
       routePrefix: '/documentation',
       swagger: {
         info: {
-          title: fastify.config.app.name,
-          version: fastify.config.app.release
+          title: 'Test swagger',
+          description: 'Testing the Fastify swagger API',
+          version: '0.1.0'
         },
-        securityDefinitions: {
-          AccessTokenBearer: {
-            type: 'apiKey',
-            description:
-              'Токен доступа передается в заголовке `Authorization` с префиксом `Bearer`\n' +
-              'Пример заголовка: `Authorization: Bearer <access-token>`\n' +
-              '**В режиме тестирования можно использовать значения заголовка: `Bearer -=test_token=-:607efd96be91830c8f7fb700`**',
-            name: 'Authorization',
-            in: 'header'
-          }
+        externalDocs: {
+          url: 'https://swagger.io',
+          description: 'Find more info here'
         },
-        servers: [],
+        host: 'localhost',
+        schemes: ['http'],
         consumes: ['application/json'],
         produces: ['application/json'],
-        components: {securitySchemes: {}}
-      }
+        tags: [],
+        definitions: {
+          User: {
+            $id: 'User',
+            type: 'object',
+            required: ['id', 'email'],
+            properties: {
+              id: {type: 'string', format: 'uuid'},
+              firstName: {type: 'string'},
+              lastName: {type: 'string'},
+              email: {type: 'string', format: 'email'}
+            }
+          }
+        },
+        securityDefinitions: {
+          apiKey: {
+            type: 'apiKey',
+            name: 'apiKey',
+            in: 'header'
+          }
+        }
+      },
+      uiConfig: {
+        docExpansion: 'full',
+        deepLinking: false
+      },
+      uiHooks: {
+        onRequest: function (request, reply, next) {
+          next()
+        },
+        preHandler: function (request, reply, next) {
+          next()
+        }
+      },
+      staticCSP: true,
+      transformStaticCSP: (header) => header,
+      exposeRoute: true,
+      // refResolver: {
+      //   buildLocalReference(json, baseUri, fragment, i) {
+      //     return json.$id || `my-fragment-${i}`
+      //   }
+      // }
     })
+
+    // Регистрация плагина fastify-oas
 
     // Basic авторизация для доступа к документации
     fastify.addHook('preValidation', async (req, reply) => {
@@ -68,7 +99,7 @@ const fastifyOpenAPI = async function (fastify) {
     // Формирование документации
     fastify.addHook('onReady', async function () {
       if (fastify.config.debug || fastify.config.custom.oas.expose) {
-        await fastify.oas()
+        await fastify.swagger()
         fastify.log.info('oas: generated OpenAPI documentation successfully')
       }
     })
